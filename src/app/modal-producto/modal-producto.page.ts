@@ -11,22 +11,24 @@ import { Util } from '../shared/util';
   templateUrl: 'modal-producto.page.html',
   styleUrls: ['modal-producto.page.scss'],
 })
+
+
 export class ModalProductoPage {
 
   @ViewChild(IonModal) modal: IonModal;
 
   private closeEvent: EventEmitter<string>;
+  private fileImage: boolean;
   public accion: string;
   public title: string;
   public esRegistro = false;
   public esEdicion = false;
   public esDetalle = false;
-  public esActualizarTalla = false;
   public producto: Producto;
 
   nombre : string;
-  precio : number;
-  stock : number;
+  precio : string;
+  stock : string;
   id : number;
 
   files: any = []
@@ -52,45 +54,63 @@ export class ModalProductoPage {
   }
 
   public submitProducto() {
-    this.util.showLoading('Trabajando...')
 
-    let producto = {
-      nombre: this.nombre,
-      precio: this.precio,
-      stock: this.stock,
-    }
+    if(this.nombre == '' || this.precio == null  || this.stock == null){
+      this.util.presentAlert("Todos los campos son requeridos", 'Error');
+    }else{
+     
+      this.util.showLoading('Trabajando...')
 
-    if (this.esRegistro) {
-      const registrarProducto = this.serviceService.crearProductos(producto).toPromise();
-      Promise.all([registrarProducto]).then(res => {
-
-        this.util.hideLoader()
-        this.loadImages(res[0].productId)
-
-      }).catch(err => {
-        this.util.hideLoader()
-        this.util.presentAlert("Error al registrar producto", 'Error');
-      })
-
-    } else  {
-      let id = this.id
-      const registrarProducto = this.serviceService.actualizarProductos(producto,id).toPromise();
-      Promise.all([registrarProducto]).then(res => {
-
-        this.util.hideLoader()
-        this.loadImages(res[0].productId)
-
-      }).catch(err => {
-        this.util.hideLoader()
-        this.util.presentAlert("Error al actualizar producto", 'Error');
-      })
-
-
+      let producto = {
+        nombre: this.nombre,
+        precio: this.precio,
+        stock: this.stock,
+      }
+  
+      if (this.esRegistro) {
+        const registrarProducto = this.serviceService.crearProductos(producto).toPromise();
+        Promise.all([registrarProducto]).then(res => {
+  
+       
+          if(this.fileImage){
+            this.util.hideLoader()
+            this.loadImages(res[0].productId)
+          }else{
+            this.util.hideLoader()
+            this.util.presentAlert("Producto registrado exitosamente", 'Exito');
+            this.closeModal();
+          }
+  
+        }).catch(err => {
+          this.util.hideLoader()
+          this.util.presentAlert("Error al registrar producto", 'Error');
+        })
+  
+      } else  {
+        let id = this.id
+        const registrarProducto = this.serviceService.actualizarProductos(producto,id).toPromise();
+        Promise.all([registrarProducto]).then(res => {
+  
+          if(this.fileImage){
+            this.util.hideLoader()
+            this.loadImages(res[0].productId)
+          }else{
+            this.util.hideLoader()
+            this.util.presentAlert("Producto registrado exitosamente", 'Exito');
+            this.closeModal();
+          }
+  
+        }).catch(err => {
+          this.util.hideLoader()
+          this.util.presentAlert("Error al actualizar producto", 'Error');
+        })
+      }
     }
   }
 
 
   public openFile(event: any) {
+    this.fileImage = true;
     const imagen = event.target.files[0];
     console.log(imagen.type);
     if (['image'].includes(imagen.type.slice(0, 5))) {
@@ -155,6 +175,12 @@ export class ModalProductoPage {
     this.modalCtrl.dismiss();
   }
 
-
-
+  keyPress(event: KeyboardEvent) {
+    const pattern = /[0-9]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+        // invalid character, prevent input
+        event.preventDefault();
+    }
+}
 }

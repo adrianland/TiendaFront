@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<ion-header [translucent]="true" class="imagenProducto">
   <ion-toolbar>
     <ion-title>
       <ion-button shape="round" (click)="openModal('nuevo',[])">Nuevo Producto</ion-button>
@@ -10,13 +10,14 @@
     <ion-row >
       <ion-col size="4" *ngFor="let producto of productos">
         <ion-card>
-          <img src="http://127.0.0.1:8000/imagenes/{{producto.imagen}}" />
+          <img src='http://127.0.0.1:8000/imagenes/{{producto.imagen}}' [hidden]="producto.imagen == null" height="200" style="margin-left: 115px;display: block; margin-left: auto;margin-right: auto;"/>
+          <img src='../../assets/imagen.png' [hidden]="producto.imagen != null"  height="200" style="margin-left: 115px;display: block; margin-left: auto;margin-right: auto;"/>
           <ion-card-content>
             <ion-card-title>
               {{producto.nombre}}
             </ion-card-title>
             <p>
-              <b>Precio: </b>  {{producto.precio}}
+              <b>Precio: </b> ${{producto.precio}}
             </p>
             <p>
               <b>Stock: </b>  {{producto.stock}}
@@ -38,6 +39,8 @@
           </ion-row>
         </ion-card>
       </ion-col>
+
+      <div style="margin: 8px auto; margin-top: 34px;" [hidden]="this.productos">No hay contenido disponible</div>
     </ion-row>
   </ion-grid>
 </ion-content>

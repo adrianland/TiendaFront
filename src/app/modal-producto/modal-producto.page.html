@@ -14,16 +14,16 @@
 
     <ion-item>
       <ion-label position="stacked">Nombre</ion-label>
-      <ion-input type="text" placeholder="Nombre producto " [(ngModel)]="nombre"></ion-input>
+      <ion-input type="text" placeholder="Nombre producto " [(ngModel)]="nombre" ></ion-input>
     </ion-item>
     <ion-item>
       <ion-label position="stacked">Precio</ion-label>
-      <ion-input type="text" placeholder="Precio producto" [(ngModel)]="precio"></ion-input>
+      <ion-input type="text" placeholder="Precio producto" [(ngModel)]="precio" (keypress)="keyPress($event)" ></ion-input>
     </ion-item>
    
     <ion-item>
       <ion-label position="stacked">Stock</ion-label>
-      <ion-input type="text" placeholder="Cantidad" [(ngModel)]="stock"></ion-input>
+      <ion-input type="text" placeholder="Cantidad" [(ngModel)]="stock" (keypress)="keyPress($event)" ></ion-input>
     </ion-item>
 
     <ion-row>
